@@ -1,0 +1,9 @@
+1 solo se permite una linea de invesgigacion por profesor
+2 editar alumno (nombres juntos) ****Ok
+3 alta alumno no direcciona al guardar a: MenuAlumno *** OK
+4 alumno  nueva solicitud, limpiar resultados al cambiar seleccion ***OK
+5 foro alumno, se detiene por datos undefined ***ok
+6 foro profe ver publicacion aparecen nulls ok***
+7 enviar actividad alumno no redirecciona a index_Alumno *** ok
+8 calificar actividad en profeosr no redirecciona a VerActividadP
+9 F por finalizar curso

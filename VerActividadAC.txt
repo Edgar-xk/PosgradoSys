@@ -1,0 +1,151 @@
+app.controller("VerActividadAC", function ($rootScope, $location, $scope) {
+    $scope.$on('$routeChangeSuccess', function () {
+        if ($location.path() == '/VerActividadA') {
+            setListeners();
+        }
+    });
+
+    setListeners = function () {
+        console.clear();
+        //Form Oculto
+        document.getElementById("IdCursoO").setAttribute("value", $rootScope.Id_Curso);
+        document.getElementById("IdActividadO").setAttribute("value", $rootScope.Id_Actividad);
+
+
+        document.getElementById("IdAlumnoO").setAttribute("value", localStorage.getItem("IdUsuario"));
+
+        document.getElementById("Operation").setAttribute("value", "6");
+
+        //Ajax
+
+        var datos1 = JSON.parse(ajax("form#Oculto"));
+        var datos = datos1[0][0];
+        console.log(datos);
+
+        document.getElementById("NombreActividad").setAttribute("value", datos.NombreActividad);
+        document.getElementById("DescripcionActividad").setAttribute("value", datos.DescripcionActividad);
+
+        if (datos.TipoActividad == 'E') {
+            document.getElementById("TipoActividad").setAttribute("value", "Examen");
+        } else {
+            document.getElementById("TipoActividad").setAttribute("value", "Tarea");
+        }
+
+        //document.getElementById("FehcaAsignacionActividad").setAttribute("value", datos.FechaAsignacion);
+        document.getElementById("FechaInicio").setAttribute("value", datos.FechaInicio);
+        document.getElementById("FechaFinActividad").setAttribute("value", datos.FechaFin);
+
+        if (datos.FechaSubida != null) {
+            document.getElementById("FechaSubidaActividad").setAttribute("value", datos.FechaSubida);
+            if (datos.Calificacion != null) {
+                document.getElementById("CalificacionActividad").setAttribute("value", datos.Calificacion);
+            }
+            //document.getElementById("FechaCalificadaActividad").setAttribute("value", datos.FechaCalificada);
+            if (datos.Comentarios != null) {
+                document.getElementById("ComentariosActividad").setAttribute("value", datos.Comentarios);
+            }
+            document.getElementById("BtnSubir").setAttribute("disabled", true);
+            document.getElementById("File").classList.add("d-none");
+        } else {
+            document.getElementById("BtnSubir").addEventListener("click", function () {
+                document.getElementById("IdCurso").setAttribute("value", $rootScope.Id_Curso);
+                document.getElementById("IdActividad").setAttribute("value", $rootScope.Id_Actividad);
+                document.getElementById("IdAlumno").setAttribute("value", localStorage.getItem("IdUsuario"));
+
+                var today = new Date();
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes();
+                document.getElementById("FechaSubida").setAttribute("value", date);
+                document.getElementById("Operation1").setAttribute("value", "7");
+
+                //Ajax
+
+                ajax("form#Principal");
+                window.location.href="#!index_alumno";
+            });
+        }
+
+
+
+
+
+
+    }
+    ajax = function (formulario) {
+        var respuesta1;
+        waitingForData = true;
+        //////event.preventDefault();
+        var formData = new FormData($(formulario)[0]);
+        $.ajax({
+            url: 'alumno',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+
+                Errores(respuesta);
+                respuesta1 = respuesta;
+
+
+            }
+        });
+        return respuesta1;
+    }
+    Errores = function (error) {
+
+        switch (error) {
+            case "1":
+                alert("Usuario/Contraseña incorrectos");
+                break;
+
+            case "2":
+                console.log("Fallo al Conectar BD Local");
+                break;
+            case "3":
+                alert("Fallo al conectar BD remota");
+                break;
+            case "4":
+                alert("Error en la BD");
+                break;
+            case "5":
+                //alert("Consulta regresa conjunto Vacio");
+                break;
+            case "6":
+                alert("Falló al ejecutar consulta");
+                break;
+            case "7":
+                alert("Sesión Expiro");
+                break;
+            case "8":
+                alert("Faltan Datos en el Formulario");
+                break;
+            case "9":
+                alert("Datos Invalidos en formularo");
+                break;
+            case "10":
+                alert("Operación denegada");
+                break;
+            case "11":
+                alert("Formulario Invalido");
+                break;
+            case "12":
+                alert("Archivo en Formulario es demasiado grande");
+                break;
+            case "255":
+                alert("¡Error!");
+                break;
+
+            default:
+                return error;
+                break;
+        }
+        return "Error";
+
+
+
+    }
+
+
+});

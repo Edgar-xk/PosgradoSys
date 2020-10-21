@@ -1,0 +1,1 @@
+{"id":"b5e5abb105f2bcaf92296de91be83a8066bbed57","caller":"admin","operation":"38","state":"0","coordinatorAddress":"https://192.168.100.4","tablesLocked":["area_conocimiento","identificador_sitio"],"transacctionInfo":"call admin38('Astronomia');","parameterList":[],"rollbackInfo":"call rollbackadmin38(?);","rollbackParameters":[20]}

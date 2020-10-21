@@ -1,0 +1,1 @@
+{"id":"c1194f5fceff2b00a7ae857ef2b516113d32243a","caller":"alumno","operation":"23","state":"0","coordinatorAddress":"https://192.168.100.4","tablesLocked":["solicitud","identificador_sitio","alumno"],"transacctionInfo":"call alumno23(16,'A');","parameterList":[],"rollbackInfo":"call rollbackalumno23(?,?);","rollbackParameters":[16,"P"]}

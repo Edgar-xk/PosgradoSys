@@ -1,0 +1,234 @@
+app.controller("SolicitudIngreso1C", function ($rootScope, $location, $scope) {
+    $scope.$on('$routeChangeSuccess', function () {
+        if ($location.path() == '/SolicitudIngreso1') {
+            setListeners();
+        }
+    });
+
+    setListeners = function () {
+        console.clear();
+        document.getElementById("IdPosgradoO").setAttribute("value", $rootScope.Id_Posgrado);
+
+
+        document.getElementById("IdSitioO").setAttribute("value", $rootScope.Identificador_Sitio);
+        document.getElementById("IdUniversidadO").setAttribute("value", $rootScope.Id_UniversidadS);
+
+
+        document.getElementById("OperationO").setAttribute("value", "17");
+
+        var datos = JSON.parse(ajax("form#Oculto"));
+
+
+        document.getElementById("Univerdidad").setAttribute("value", datos[0][0].Universidad);
+        document.getElementById("Posgrado").setAttribute("value", datos[0][0].Posgrado);
+
+
+        var divPrincipalR = document.getElementById("DivResultados");
+        var divRow;
+        var divCol;
+        var span;
+        var txtSpan;
+        var BtnVerD;
+        var txtBtn;
+
+        for (r = 0; r < datos.length; r++) {
+            for (c = 0; c < datos[r].length; c++) {
+                divRow = document.createElement("div");
+                divRow.className = "row form-group";
+
+                //Texto
+                divCol = document.createElement("div");
+                divCol.className = "col-md-10"; //completar
+
+                span = document.createElement("span");
+                span.className = "form-control";
+
+                txtSpan = document.createTextNode(datos[r][c].LineaInvestigacion);
+                span.appendChild(txtSpan);
+                divCol.appendChild(span);
+                divRow.appendChild(divCol);
+
+                //boton
+                divCol = document.createElement("div");
+                divCol.className = "col-md-2"; //completar
+
+                BtnVerD = document.createElement("button");
+                BtnVerD.className = "btn btn-success btn-block" //Cambiar
+
+                txtBtn = document.createTextNode("Consultar");
+                BtnVerD.appendChild(txtBtn);
+                ObjectString = JSON.stringify(datos[r][c]);
+                BtnVerD.setAttribute("value", ObjectString);
+                BtnVerD.addEventListener("click", function (ev) {
+                    var datos = JSON.parse(ev.target.value);
+
+                    document.getElementById("IdPosgradoO1").setAttribute("value", $rootScope.Id_Posgrado);
+                    document.getElementById("IdLineaInvestogacionO").setAttribute("value", datos.IdLineaInvestigacion);
+
+
+
+                    document.getElementById("OperationO1").setAttribute("value", "18");
+
+                    var datos1 = JSON.parse(ajax("form#Oculto1"));
+
+                    actualizarTemas(datos1);
+
+
+                });
+                divCol.appendChild(BtnVerD);
+                divRow.appendChild(divCol);
+                divPrincipalR.appendChild(divRow);
+            }
+        }
+
+
+    }
+    actualizarTemas = function (datos) {
+        console.log(datos[0]);
+        var divPrincipalR = document.getElementById("DivResultados1");
+        var divRow;
+        var divCol;
+        var span;
+        var txtSpan;
+        var BtnVerD;
+        var txtBtn;
+
+        var divTemporal=document.createElement("div");
+        divTemporal.setAttribute("id","Temporal");
+
+        for (c = 0; c < datos[0].length; c++) {
+            divRow = document.createElement("div");
+            divRow.className = "row form-group";
+
+            //Texto
+            divCol = document.createElement("div");
+            divCol.className = "col-md-10"; //completar
+
+            span = document.createElement("span");
+            span.className = "form-control";
+
+            txtSpan = document.createTextNode(datos[0][c].Tema);
+            span.appendChild(txtSpan);
+            divCol.appendChild(span);
+            divRow.appendChild(divCol);
+
+            //boton
+            divCol = document.createElement("div");
+            divCol.className = "col-md-2"; //completar
+
+            BtnVerD = document.createElement("button");
+            BtnVerD.className = "btn btn-success btn-block" //Cambiar
+
+            txtBtn = document.createTextNode("Seleccionar");
+            BtnVerD.appendChild(txtBtn);
+            ObjectString = JSON.stringify(datos[0][c]);
+            BtnVerD.setAttribute("value", ObjectString);
+            BtnVerD.addEventListener("click", function (ev) {
+                var datos = JSON.parse(ev.target.value);
+                console.log(datos);
+                console.log(localStorage.getItem("IdUsuario"));
+                $rootScope.Identificador_Sitio = datos.IdentificadorSitio;
+                console.log(datos.IdentificadorSitio);
+                $rootScope.Id_Universidad = datos.IdUniversidadSitio;
+
+                $rootScope.Id_LineaInvestigacion = datos.IdLineaInvestigacion;
+                $rootScope.Id_Tema = datos.IdTema;
+                window.location.href = "#!SolicitudIngreso2"; //completar
+
+            });
+            divCol.appendChild(BtnVerD);
+            divRow.appendChild(divCol);
+            divTemporal.appendChild(divRow);
+        }
+
+        if(divPrincipalR.hasChildNodes()){
+            if (document.body.contains(document.getElementById("Temporal"))) {
+                document.getElementById("Temporal").remove();
+            }
+
+            
+        }
+
+
+
+
+        console.log(divPrincipalR);
+
+    }
+    ajax = function (formulario) {
+        var respuesta1;
+        waitingForData = true;
+        //////event.preventDefault();
+        var formData = new FormData($(formulario)[0]);
+        $.ajax({
+            url: 'alumno',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+
+                Errores(respuesta);
+                respuesta1 = respuesta;
+
+
+            }
+        });
+        return respuesta1;
+    }
+    Errores = function (error) {
+
+        switch (error) {
+            case "1":
+                alert("Usuario/Contraseña incorrectos");
+                break;
+
+            case "2":
+                console.log("Fallo al Conectar BD Local");
+                break;
+            case "3":
+                alert("Fallo al conectar BD remota");
+                break;
+            case "4":
+                alert("Error en la BD");
+                break;
+            case "5":
+                //alert("Consulta regresa conjunto Vacio");
+                break;
+            case "6":
+                alert("Falló al ejecutar consulta");
+                break;
+            case "7":
+                alert("Sesión Expiro");
+                break;
+            case "8":
+                alert("Faltan Datos en el Formulario");
+                break;
+            case "9":
+                alert("Datos Invalidos en formularo");
+                break;
+            case "10":
+                alert("Operación denegada");
+                break;
+            case "11":
+                alert("Formulario Invalido");
+                break;
+            case "12":
+                alert("Archivo en Formulario es demasiado grande");
+                break;
+            case "255":
+                alert("¡Error!");
+                break;
+
+            default:
+                return error;
+                break;
+        }
+        return "Error";
+
+
+
+    }
+});

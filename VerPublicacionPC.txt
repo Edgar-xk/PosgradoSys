@@ -1,0 +1,220 @@
+app.controller("VerPublicacionPC", function ($rootScope, $location, $scope) {
+    $scope.$on('$routeChangeSuccess', function () {
+        if ($location.path() == '/VerPublicacionP') {
+            setListeners();
+        }
+    });
+
+    setListeners = function () {
+        actualizar();
+
+        document.getElementById("btnPublicar").addEventListener("click", function () {
+            document.getElementById("IdProfesor").setAttribute("value", localStorage.getItem("IdUsuario"));
+            document.getElementById("IdPublicacion").setAttribute("value", $rootScope.Id_Publicacion);
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes();
+
+            document.getElementById("Fecha").setAttribute("value", date);
+
+
+            /* var fecha=new Date();
+             document.getElementById("Fecha",fecha);*/
+
+            document.getElementById("Operation").setAttribute("value", "20");
+
+            //Ajax
+
+            ajax("form#Principal");
+            actualizar();
+            document.getElementById("Respuesta").setAttribute("value", "");
+
+        });
+
+
+
+
+
+
+    }
+
+    actualizar = function () {
+        console.clear();
+        document.getElementById("IdProfesorO").setAttribute("value", localStorage.getItem("IdUsuario"));
+        document.getElementById("IdPublicacionO").setAttribute("value", $rootScope.Id_Publicacion);
+
+
+
+
+        document.getElementById("OperationO").setAttribute("value", "19");
+
+        //Ajax
+
+        var datos1 = JSON.parse(ajax("form#Oculto"));
+        var datos = datos1[0];
+        console.log(datos);
+
+        document.getElementById("Publicacion").setAttribute("value", datos[0].Publicacion);
+        document.getElementById("AutorFecha").childNodes[0].nodeValue = "Autor: " + datos[0].AutorPublicacion + "\t\tFecha: " + datos[0].FechaPublicacion;
+
+        if (datos[0].Respuesta != null) {
+
+            var divPrincipalR = document.getElementById("resultados");
+            var divTemporal
+            var divRow;
+            var divCol;
+            var span;
+            var txtSpan;
+            var smallAutor;
+            var txtSmallAutor;
+
+            divTemporal = document.createElement("div");
+            divTemporal.setAttribute("id", "DivTemporal");
+            for (r = 0; r < datos.length; r++) {
+
+                divRow = document.createElement("div");
+                divRow.className = "row";
+
+                //Texto
+                divCol = document.createElement("div");
+                divCol.className = "col-md-1"; //completar
+
+                span = document.createElement("span");
+                span.className = "text-success";
+
+                // txtSpan=document.createTextNode(datos[r][c].Grupo);
+                //span.appendChild(txtSpan);
+                divCol.appendChild(span);
+                divRow.appendChild(divCol);
+
+
+                divCol = document.createElement("div");
+                divCol.className = "col-md-11"; //completar
+
+                span = document.createElement("span");
+                span.className = "form-control";
+
+                txtSpan = document.createTextNode(datos[r].Respuesta);
+                span.appendChild(txtSpan);
+                divCol.appendChild(span);
+
+                smallAutor = document.createElement("small");
+                smallAutor.className = "form-text text-muted";
+                txtSmallAutor = document.createTextNode("Autor: " + datos[r].AutorRespuesta + "\t\tFecha: " + datos[r].FechaRespuesta);
+                smallAutor.appendChild(txtSmallAutor);
+                divCol.appendChild(smallAutor);
+
+                divRow.appendChild(divCol);
+
+
+
+
+
+
+
+
+
+                divTemporal.appendChild(divRow);
+
+
+            }
+
+
+            if (divPrincipalR.hasChildNodes()) {
+                if (document.body.contains(document.getElementById("DivTemporal"))) {
+                    document.getElementById("DivTemporal").remove();
+                }
+                divPrincipalR.appendChild(divTemporal);
+
+
+            } else {
+                divPrincipalR.appendChild(divTemporal);
+            }
+        }
+
+
+
+
+
+
+
+
+
+    }
+    ajax = function (formulario) {
+        var respuesta1;
+        waitingForData = true;
+        ////event.preventDefault();
+        var formData = new FormData($(formulario)[0]);
+        $.ajax({
+            url: 'profesor',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+
+                Errores(respuesta);
+                respuesta1 = respuesta;
+
+
+            }
+        });
+        return respuesta1;
+    }
+    Errores = function (error) {
+
+        switch (error) {
+            case "1":
+                alert("Usuario/Contraseña incorrectos");
+                break;
+
+            case "2":
+                console.log("Fallo al Conectar BD Local");
+                break;
+            case "3":
+                alert("Fallo al conectar BD remota");
+                break;
+            case "4":
+                alert("Error en la BD");
+                break;
+            case "5":
+                //alert("Consulta regresa conjunto Vacio");
+                break;
+            case "6":
+                alert("Falló al ejecutar consulta");
+                break;
+            case "7":
+                alert("Sesión Expiro");
+                break;
+            case "8":
+                alert("Faltan Datos en el Formulario");
+                break;
+            case "9":
+                alert("Datos Invalidos en formularo");
+                break;
+            case "10":
+                alert("Operación denegada");
+                break;
+            case "11":
+                alert("Formulario Invalido");
+                break;
+            case "12":
+                alert("Archivo en Formulario es demasiado grande");
+                break;
+            case "255":
+                alert("¡Error!");
+                break;
+
+            default:
+                return error;
+                break;
+        }
+        return "Error";
+
+
+
+    }
+
+});

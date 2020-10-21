@@ -1,0 +1,320 @@
+app.controller("ForoAC", function ($rootScope, $location, $scope) {
+    $scope.$on('$routeChangeSuccess', function () {
+        if ($location.path() == '/ForoA') {
+            setListeners();
+        }
+    });
+
+    setListeners = function () {
+        //Form Oculto
+        document.getElementById("IdCursoO").setAttribute("value", localStorage.getItem("IdCurso"));
+        /* document.getElementById("IdSitioO").setAttribute("value", $rootScope.Identificador_Sitio);
+         document.getElementById("IdUniversidadO").setAttribute("value", $rootScope.Id_Universidad);*/
+        Inicio();
+        document.getElementById("InicioTab").addEventListener("click", function () {
+            Inicio();
+        });
+        document.getElementById("MisPublicacionesTab").addEventListener("click", function () {
+            MisPublicaciones();
+        });
+
+
+
+
+        //Form Oculto1
+        document.getElementById("IdAlumnoO1").setAttribute("value", localStorage.getItem("IdUsuario"));
+        document.getElementById("IdCursoO1").setAttribute("value", localStorage.getItem("IdCurso"));
+        document.getElementById("IdSitioO1").setAttribute("value", $rootScope.Identificador_Sitio);
+        document.getElementById("IdUniversidadO1").setAttribute("value", $rootScope.Id_Universidad);
+
+        //Form Principal
+        document.getElementById("IdAlumnoP").setAttribute("value", localStorage.getItem("IdUsuario"));
+        document.getElementById("IdCursoP").setAttribute("value", localStorage.getItem("IdCurso"));
+        document.getElementById("IdSitioP").setAttribute("value", $rootScope.Identificador_Sitio);
+        document.getElementById("IdUniversidadP").setAttribute("value", $rootScope.Id_Universidad);
+
+        document.getElementById("PublicarBtn").addEventListener("click", function () {
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes();
+            document.getElementById("FechaPubli").setAttribute("value", date);
+            document.getElementById("Operation").setAttribute("value", "10");
+
+            //Ajax
+
+            ajax("form#Principal");
+            MisPublicaciones();
+        })
+    }
+
+    Inicio = function () {
+
+        document.getElementById("OperationO").setAttribute("value", "8");
+
+        //Ajax
+
+        var datos1 = JSON.parse(ajax("form#Oculto"));
+
+        var datos = datos1[0];
+
+
+        if (datos != 5 && datos1 != 5) {
+            var divPrincipalR = document.getElementById("resultados1");
+            var divRow;
+            var divCol;
+            var span;
+            var txtSpan;
+            var BtnVerD;
+            var txtBtn;
+            var smallAutor;
+            var txtSmallAutor;
+            var divTemporal = document.createElement("div");
+            divTemporal.setAttribute("id", "Temp1");
+
+            for (r = 0; r < datos.length; r++) {
+
+                divRow = document.createElement("div");
+                divRow.className = "row";
+
+                //Texto
+                divCol = document.createElement("div");
+                divCol.className = "col-md-9";
+
+                span = document.createElement("span");
+                span.className = "form-control";
+
+                txtSpan = document.createTextNode(datos[r].Publicacion);
+                span.appendChild(txtSpan);
+                divCol.appendChild(span);
+
+                smallAutor = document.createElement("small");
+                smallAutor.className = "form-text text-muted";
+                txtSmallAutor = document.createTextNode("Autor: " + datos[r].Autor + "\t\tFecha: " + datos[r].Fecha);
+                smallAutor.appendChild(txtSmallAutor);
+                divCol.appendChild(smallAutor);
+
+                divRow.appendChild(divCol);
+
+                //boton
+                divCol = document.createElement("div");
+                divCol.className = "col-md-3";
+
+                BtnVerD = document.createElement("button");
+                BtnVerD.className = "btn btn-success btn-block"
+
+                txtBtn = document.createTextNode("Ver Detalles");
+                BtnVerD.appendChild(txtBtn);
+                ObjectString = JSON.stringify(datos[r]);
+                BtnVerD.setAttribute("value", ObjectString);
+                BtnVerD.addEventListener("click", function (ev) {
+                    var datos = JSON.parse(ev.target.value);
+
+                    $rootScope.Id_Publicacion = datos.IdPublicacionForo;
+                    window.location.href = "#!VerPublicacionA";
+
+                });
+                divCol.appendChild(BtnVerD);
+                divRow.appendChild(divCol);
+                divTemporal.appendChild(divRow);
+
+            }
+
+            if (divPrincipalR.hasChildNodes()) {
+                if (document.body.contains(document.getElementById("Temp1"))) {
+                    document.getElementById("Temp1").remove();
+                }
+
+
+                divPrincipalR.appendChild(divTemporal);
+
+            } else {
+                divPrincipalR.appendChild(divTemporal);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    MisPublicaciones = function () {
+        document.getElementById("OperationO1").setAttribute("value", "9");
+        console.clear();
+        //Ajax
+
+        var datos1 = JSON.parse(ajax("form#Oculto1"));
+        var datos = datos1[0];
+        console.log(datos);
+
+        var divPrincipalR = document.getElementById("resultados2");
+        var divRow;
+        var divCol;
+        var span;
+        var txtSpan;
+        var BtnVerD;
+        var txtBtn;
+        var smallAutor;
+        var txtSmallAutor;
+        var divTemporal = document.createElement("div");
+        divTemporal.setAttribute("id", "Temp");
+
+        if(datos1!=5){
+            for (r = 0; r < datos.length; r++) {
+
+                divRow = document.createElement("div");
+                divRow.className = "row";
+    
+                //Texto
+                divCol = document.createElement("div");
+                divCol.className = "col-md-9";
+    
+                span = document.createElement("span");
+                span.className = "form-control";
+    
+                txtSpan = document.createTextNode(datos[r].Publicacion);
+                span.appendChild(txtSpan);
+                divCol.appendChild(span);
+    
+                smallAutor = document.createElement("small");
+                smallAutor.className = "form-text text-muted";
+                txtSmallAutor = document.createTextNode("Fecha: " + datos[r].Fecha);
+                smallAutor.appendChild(txtSmallAutor);
+                divCol.appendChild(smallAutor);
+    
+                divRow.appendChild(divCol);
+    
+                //boton
+                divCol = document.createElement("div");
+                divCol.className = "col-md-3";
+    
+                BtnVerD = document.createElement("button");
+                BtnVerD.className = "btn btn-success btn-block"
+    
+                txtBtn = document.createTextNode("Ver Detalles");
+                BtnVerD.appendChild(txtBtn);
+                ObjectString = JSON.stringify(datos[r]);
+                BtnVerD.setAttribute("value", ObjectString);
+                BtnVerD.addEventListener("click", function (ev) {
+                    var datos = JSON.parse(ev.target.value);
+    
+                    $rootScope.Id_Publicacion = datos.IdPublicacionForo;
+                    window.location.href = "#!VerPublicacionA";
+    
+                });
+                divCol.appendChild(BtnVerD);
+                divRow.appendChild(divCol);
+                divTemporal.appendChild(divRow);
+    
+            }
+    
+    
+            if (divPrincipalR.hasChildNodes()) {
+                if (document.body.contains(document.getElementById("Temp"))) {
+                    document.getElementById("Temp").remove();
+                }
+    
+    
+                divPrincipalR.appendChild(divTemporal);
+    
+            } else {
+                divPrincipalR.appendChild(divTemporal);
+            }
+        }
+
+      
+
+
+
+
+
+
+
+
+
+    }
+    ajax = function (formulario) {
+        var respuesta1;
+        waitingForData = true;
+        //////event.preventDefault();
+        var formData = new FormData($(formulario)[0]);
+        $.ajax({
+            url: 'alumno',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+
+                Errores(respuesta);
+                respuesta1 = respuesta;
+
+
+            }
+        });
+        return respuesta1;
+    }
+    Errores = function (error) {
+
+        switch (error) {
+            case "1":
+                alert("Usuario/Contraseña incorrectos");
+                break;
+
+            case "2":
+                console.log("Fallo al Conectar BD Local");
+                break;
+            case "3":
+                alert("Fallo al conectar BD remota");
+                break;
+            case "4":
+                alert("Error en la BD");
+                break;
+            case "5":
+                //alert("Consulta regresa conjunto Vacio");
+                break;
+            case "6":
+                alert("Falló al ejecutar consulta");
+                break;
+            case "7":
+                alert("Sesión Expiro");
+                break;
+            case "8":
+                alert("Faltan Datos en el Formulario");
+                break;
+            case "9":
+                alert("Datos Invalidos en formularo");
+                break;
+            case "10":
+                alert("Operación denegada");
+                break;
+            case "11":
+                alert("Formulario Invalido");
+                break;
+            case "12":
+                alert("Archivo en Formulario es demasiado grande");
+                break;
+            case "255":
+                alert("¡Error!");
+                break;
+
+            default:
+                return error;
+                break;
+        }
+        return "Error";
+
+
+
+    }
+
+});

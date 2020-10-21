@@ -1,0 +1,327 @@
+app.controller("VerAlumnoC", function ($rootScope, $location, $scope) {
+    $scope.$on('$routeChangeSuccess', function () {
+        if ($location.path() == '/VerAlumno') {
+            setListeners();
+        }
+    });
+    setListeners = function () {
+        LlenarCampos();
+
+        document.getElementById("BtnEditarAlumno").addEventListener("click", function () {
+            document.getElementById("page1").classList.add("d-none"); //completar
+            document.getElementById("page2").classList.remove("d-none"); //Completar
+        });
+
+
+
+        document.getElementById("BtnCancelar").addEventListener("click", function () {
+            document.getElementById("page2").classList.add("d-none"); //completar
+            document.getElementById("page1").classList.remove("d-none"); //Completar
+        });
+
+
+
+        document.getElementById("BtnGuardar").addEventListener("click", function () {
+            document.getElementById("IdAlumnoP").setAttribute("value", $rootScope.Id_Alumno);
+            document.getElementById("idAreaP").setAttribute("value", "666");
+            document.getElementById("OperationP").setAttribute("value", "9");
+            //Ajax
+            if (ajax("form#Principal") != "Error") {
+                document.getElementById("page2").classList.add("d-none"); //completar
+                document.getElementById("page1").classList.remove("d-none"); //Completar
+                LlenarCampos();
+            }
+
+        });
+
+        document.getElementById("BtnInterrumpir").addEventListener("click", function () {
+            document.getElementById("IdAlumno1").setAttribute("value", $rootScope.Id_Alumno);
+            document.getElementById("Operation1").setAttribute("value", "5");
+
+            if (document.getElementById("Posgrado").value != "" && document.getElementById("Posgrado").value !== " ") {
+                document.getElementById("Estado").setAttribute("value", "I");
+                //Ajax
+                var datos1 = JSON.parse(ajax("form#Oculto"));
+            }
+
+        });
+
+
+    }
+    
+    LlenarCampos = function () {
+        //Form Oculto
+        document.getElementById("IdAlumno").setAttribute("value", $rootScope.Id_Alumno);
+        document.getElementById("Operation").setAttribute("value", "5");
+        //Ajax
+        var datos1 = JSON.parse(ajax("form#Oculto"));
+        var datos = datos1[0][0];
+        document.getElementById("Operation").setAttribute("value", "7");
+        var datos2 = JSON.parse(ajax("form#Oculto"));
+        var datos3 = datos2[0][0];
+
+        document.getElementById("NombreAlumno").setAttribute("value", datos.Nombre);
+        document.getElementById("FechaNacimiento").setAttribute("value", datos.FechaNacimiento);
+        if(datos.Genero == 'H'){
+            document.getElementById("Genero").setAttribute("value", "Hombre");
+        }else{
+            document.getElementById("Genero").setAttribute("value", "Mujer");
+        }
+        document.getElementById("Direccion").setAttribute("value", datos.Direccion);
+        
+        var Entidad;
+        switch (datos.EntidadFederativa) {
+
+            case "AS":
+                Entidad = "Aguascalientes";
+                break;
+            case "BC":
+                Entidad: "Baja California";
+                break;
+            case "BS":
+                Entidad = "BAJA CALIFORNIA SUR";
+                break;
+
+            case "CC":
+                Entidad = "CAMPECHE";
+                break;
+            case "CL":
+                Entidad = "COAHUILA";
+                break;
+
+            case "CM":
+                Entidad = "COLIMA";
+                break;
+
+            case "CS":
+                Entidad = "CHIAPAS";
+                break;
+
+            case "CH":
+                Entidad = "CHIHUAHUA";
+                break;
+            case "DF":
+                Entidad = "DISTRITO FEDERAL";
+                break;
+            case "DG":
+                Entidad = "DURANGO";
+                break;
+            case "GT":
+                Entidad = "GUANAJUATO";
+                break;
+            case "GR":
+                Entidad = "GUERRERO";
+                break;
+            case "HG":
+                Entidad = "HIDALGO";
+                break;
+
+            case "JC":
+                Entidad = "JALISCO";
+                break;
+            case "MC":
+                Entidad = "MEXICO";
+                break;
+            case "MN":
+                Entidad = "MICHOACAN";
+                break;
+            case "MS":
+                Entidad = "MORELOS";
+                break;
+            case "NT":
+                Entidad = "NAYARIT";
+                break;
+            case "NL":
+                Entidad = "NUEVO LEON";
+                break;
+            case "OC":
+                Entidad = "OAXACA";
+                break;
+            case "PL":
+                Entidad = "PUEBLA";
+                break;
+            case "QT":
+                Entidad = "QUERETARO";
+                break;
+            case "QR":
+                Entidad = "QUINTANA ROO";
+                break;
+            case "SP":
+                Entidad = "SAN LUIS POTOSI";
+                break;
+            case "SL":
+                Entidad = "SINALOA";
+                break;
+            case "SR":
+                Entidad = "SONORA";
+                break;
+            case "TC":
+                Entidad = "TABASCO";
+                break;
+            case "TS":
+                Entidad = "TAMAULIPAS";
+                break;
+            case "TL":
+                Entidad = "TLAXCALA";
+                break;
+            case "VZ":
+                Entidad = "VERACRUZ";
+                break;
+            case "YN":
+                Entidad = "YUCATAN";
+                break;
+            case "ZS":
+                Entidad = "ZACATECAS";
+                break;
+        }
+
+        document.getElementById("EntidadFederativa").setAttribute("value", Entidad);
+        document.getElementById("Ciudad").setAttribute("value", datos.Ciudad);
+        document.getElementById("Telefono").setAttribute("value", datos.Telefono);
+        document.getElementById("Correo").setAttribute("value", datos.Correo);
+        document.getElementById("Contraseña").setAttribute("value", datos.Contrasena);
+        document.getElementById("FechaRegistro").setAttribute("value", datos.FechaRegistro);
+        if (datos.Estado == "A") {
+            document.getElementById("Estado").setAttribute("value", "Activo");
+        } else {
+            document.getElementById("Estado").setAttribute("value", "Inactivo");
+        }
+        document.getElementById("Areaconocimiento").setAttribute("value", datos.AreaConocimiento);
+        if (datos.Posgrado != null) {
+            document.getElementById("Posgrado").setAttribute("value", datos.Posgrado);
+            switch (datos.Estado) {
+                case "P":
+                    document.getElementById("EstadoPosgrado").setAttribute("value", "Pendiente");
+                    break;
+                case "A":
+                    document.getElementById("EstadoPosgrado").setAttribute("value", "Aceptado");
+                    break;
+                case "R":
+                    document.getElementById("EstadoPosgrado").setAttribute("value", "Rechazado");
+                    break;
+
+                default:
+                    document.getElementById("EstadoPosgrado").setAttribute("value", "Indeterminado");
+                    break;
+            }
+
+
+            document.getElementById("LineaInvestigacion").setAttribute("value", datos.LineaInvestigacion);
+            document.getElementById("Tema").setAttribute("value", datos.Tema);
+            document.getElementById("ProfesorTutor").setAttribute("value", datos.NombreProfesorTutor);
+
+
+
+
+            // document.getElementById("IdArea").setAttribute("value", datos.IdAreaConocimiento);
+
+        }
+        document.getElementById("NombreAlumno1").setAttribute("value", datos3.Nombres);
+        document.getElementById("ApellidosAlumno1").setAttribute("value", datos3.Apellidos);
+        document.getElementById("FechaNacimiento1").setAttribute("value", datos.FechaNacimiento);
+
+        document.getElementById("Direccion1").setAttribute("value", datos.Direccion);
+
+        document.getElementById("Ciudad1").setAttribute("value", datos.Ciudad);
+        document.getElementById("Telefono1").setAttribute("value", datos.Telefono);
+        document.getElementById("Correo1").setAttribute("value", datos.Correo);
+        document.getElementById("EstadoP").setAttribute("value", datos.Estado);
+
+        document.getElementById("BtnHabilitarDesHabilitar").addEventListener("click", function () {
+            document.getElementById("Operation").setAttribute("value", "6");
+            ajax("form#Oculto");
+            LlenarCampos();
+        });
+
+
+    }
+    ajax = function (formulario) {
+        var respuesta1;
+        waitingForData = true;
+        //////event.preventDefault();
+        var formData = new FormData($(formulario)[0]);
+        $.ajax({
+            url: 'registrador',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+
+
+                respuesta1 = Errores(respuesta);
+
+
+            }
+        });
+        return respuesta1;
+    }
+    Errores = function (error) {
+
+        switch (error) {
+            case "1":
+                alert("Usuario/Contraseña incorrectos");
+                return "Error";
+                break;
+
+            case "2":
+                console.log("Fallo al Conectar BD Local");
+                return "Error";
+                break;
+            case "3":
+                alert("Fallo al conectar BD remota");
+                return "Error";
+                break;
+            case "4":
+                alert("Error en la BD");
+                return "Error";
+                break;
+            case "5":
+                //alert("Consulta regresa conjunto Vacio");
+                return "Error";
+                break;
+            case "6":
+                alert("Falló al ejecutar consulta");
+                return "Error";
+                break;
+            case "7":
+                alert("Sesión Expiro");
+                return "Error";
+                break;
+            case "8":
+                alert("Faltan Datos en el Formulario");
+                return "Error";
+                break;
+            case "9":
+                alert("Datos Invalidos en formularo");
+                return "Error";
+                break;
+            case "10":
+                alert("Operación denegada");
+                return "Error";
+                break;
+            case "11":
+                alert("Formulario Invalido");
+                return "Error";
+                break;
+            case "12":
+                alert("Archivo en Formulario es demasiado grande");
+                return "Error";
+                break;
+            case "255":
+                alert("¡Error!");
+                return "Error";
+                break;
+
+            default:
+                return error;
+                break;
+        }
+
+
+
+
+    }
+});

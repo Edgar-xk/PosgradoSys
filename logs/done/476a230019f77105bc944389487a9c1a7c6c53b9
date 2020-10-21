@@ -1,0 +1,1 @@
+{"id":"476a230019f77105bc944389487a9c1a7c6c53b9","caller":"admin","operation":"40","state":"0","coordinatorAddress":"https://192.168.100.4","tablesLocked":["area_conocimiento","identificador_sitio","administrador"],"transacctionInfo":"call admin40('1AS001','20','Asrtonomia');","parameterList":[],"rollbackInfo":"call rollbackadmin38(?,?);","rollbackParameters":[0]}

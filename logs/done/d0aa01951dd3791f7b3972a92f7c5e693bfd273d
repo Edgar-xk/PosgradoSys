@@ -1,0 +1,1 @@
+{"id":"d0aa01951dd3791f7b3972a92f7c5e693bfd273d","caller":"admin","operation":"40","state":"0","coordinatorAddress":"https://192.168.100.244","tablesLocked":["area_conocimiento","identificador_sitio","administrador"],"transacctionInfo":"call admin40('1AS002','19','Ciencias Ocultas');","parameterList":[],"rollbackInfo":"call rollbackadmin38(?,?);","rollbackParameters":[0]}
